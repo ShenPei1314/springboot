@@ -1,0 +1,44 @@
+package com.cms.web.content;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.cms.bean.Content;
+import com.cms.mapper.content.IContentMapper;
+
+@Controller
+@RequestMapping("/admin")
+public class ContentCotroller {
+
+	@Autowired
+	public IContentMapper contentMapper;
+	
+	@RequestMapping("/content")
+	public String Content() {
+		return "content/contentlist";
+	}
+	/**
+	 * 查询内容
+	 * (这里用一句话描述这个方法的作用)<br/>
+	 * 方法名：contentList<br/>
+	 * 创建人：ShenPei <br/>
+	 * 时间：2017年11月6日-下午3:13:13 <br/>
+	 * 手机:1564545646464<br/>
+	 * @param model
+	 * @return String<br/>
+	 * @exception <br/>
+	 * @since  1.0.0<br/>
+	 */
+	@RequestMapping("/contentlist")
+	public String contentList(Model model) {
+		List<Content> contents=contentMapper.findContent();
+		int count=contentMapper.countContent();
+		model.addAttribute("contents", contents);
+		model.addAttribute("count", count);
+		return "content/template"; 
+	}
+}

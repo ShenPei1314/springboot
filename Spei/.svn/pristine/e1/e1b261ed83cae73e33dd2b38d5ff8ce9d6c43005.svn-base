@@ -1,0 +1,11 @@
+<#list category as cate>
+<tr>
+	<th scope="row">${cate.id}</th>
+	<td><input type="text" data-field="name" data-id="${cate.id}"  size="5" class="mkedit" value="${cate.name}" /></td>
+	<td>${(cate.createTime)?date}</td>
+	<td>
+    <label><input type="radio" data-field="status" data-id="${cate.id}" data-status="${cate.status}" name="status${cate.id}" class="checked" value="${cate.status}" ${(cate.status==1)?string('checked',"")}/>发布</label>
+    <label><input type="radio" data-field="status" data-id="${cate.id}" data-status="${cate.status}" name="status${cate.id}" class="checked" value="${cate.status}" ${(cate.status==0)?string('checked',"")}/>不发布</label>
+    </td>
+</tr>
+</#list>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>用户管理</title>
+<#include "/public/common.html">
+<style>
+#title {
+	text-algin: center;
+}
+</style>
+</head>
+<body class="site-menubar-fold site-menubar-keep">
+	<#include "/public/left.html">
+	<div class="page profile profile_index">
+
+		<div class="page-content">
+			<div class="row">
+				<div class="col-lg-12 col-md-12">
+					<div class="nav-tabs-horizontal nav-tabs-inverse">
+						<span id="title">
+							<h1>用户管理</h1>
+						</span>
+						<ul class="nav nav-tabs nav-tabs-solid profile_nav"
+							id="nav-tabs-solidlist">
+							<li class="active"><a href="javascript:void(0);"
+								class="padding-horizontal-30"> <i
+									class="iconfont icon-vip fz20 tp1"></i>所有用户
+							</a></li>
+						</ul>
+
+						<div class="tab-content">
+							<div class="row">
+								<div class="col-md-12">
+									<table class="table table-hover">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>用户名</th>
+												<th>用户账号</th>
+												<th>用户创建时间</th>
+												<th>用户状态</th>
+												<th style="display: none">用户总数:<span id="count">${count}</span></th>
+											</tr>
+										</thead>
+										<tbody id="tbody">
+
+
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		$(function() {
+			var pageNo = 0;
+			var pageSize = 5;
+			//第一次加载数据(用户)
+			loadUser();
+			//加载分页
+			loadPage();
+			//加载用户删除
+			//加载用户管理
+			UpdateUser();
+
+			//查询用户
+			function loadUser() {
+				var params = {
+					"pageNo" : pageNo * pageSize,
+					"pageSize" : pageSize
+				};
+				$.ajax({
+					type : "post",
+					url : "/admin/super/template",
+					data : params,
+					success : function(data) {
+						$("#tbody").html(data);
+					}
+				});
+			}
+			;
+			//分页
+			function loadPage() {
+				var count = $("#count").text();
+				$(".pagination").mkPage(count, {
+					items_per_page : 5,
+					num_display_entries : 5,
+					num_edge_entries : 0,
+					prev_text : "上一页",
+					next_text : "下一页",
+					showGo : true,
+					showSelect : false,
+					callback : function(pno, psize) {
+						pageNo = pno;
+						loadUser();
+					},
+				});
+			}
+			;
+
+			
+			function UpdateUser() {
+				$("#tbody").on("click", ".checked", function() {
+                        var id = $(this).data("userid");  //
+						var status=$(this).attr("name");
+						var value = $("input[type='radio'][name='"+status+"']:checked").val();
+						var user={"id":id,"status":value};
+						$.ajax({
+							type:"post",
+							url:basePath+"/admin/super/update",
+							data:user,
+							success:function(data){
+								if(data!="success"){
+									loading("失败！",2);
+								}else{
+									loading("修改成功!",2);
+								}
+							
+						} 
+					});
+
+				});
+			};
+			
+
+		});
+	</script>
+</body>
+</html>

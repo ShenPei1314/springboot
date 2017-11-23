@@ -1,0 +1,11 @@
+<#list category as cate>
+<tr>
+	<th scope="row">${cate.id}</th>
+	<td>${cate.name}</td>
+	<td>${(cate.createTime)?date}</td>
+	<#if cate.status==0>
+	<td>未发布</td>
+	<#else>
+	<td>发布</td></#if>
+</tr>
+</#list>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 后台用户管理的SQL语句 -->
+<mapper namespace="com.cms.mapper.supervise.IUserAdminMapper">
+   <!-- 查询所有用户 -->
+	<select id="getUsers" resultType="user">
+		SELECT
+		id,
+		username,
+		account,
+		header_pic as headerPic,
+		create_time as createTime
+		FROM
+		mk_user
+	</select>
+</mapper>

@@ -1,0 +1,13 @@
+<#list contents as content>
+	<tr data-count=${count}>
+	  <th scope="row">${content_index+1}</th>
+	  <td>${content.title}</td>
+	  <td>${content.tag}</td>
+	  <td>${(content.createTime)?date}</td>
+	  <td>
+		<label><input data-field="status" data-opid="${content.id}" type="radio" name="status${content.id}" class="checked" value="0" <#if content.status==0>checked</#if>/>未发布</label>
+		 <label><input data-field="status" data-opid="${content.id}" type="radio" name="status${content.id}" class="checked" value="1" ${(content.status==1)?string('checked',"")}/>发布</label>
+	  </td>
+	  <td><a href="javascript:void(0);" data-byid="${content.id}" id="update">编辑</a></td>
+	</tr>
+</#list>

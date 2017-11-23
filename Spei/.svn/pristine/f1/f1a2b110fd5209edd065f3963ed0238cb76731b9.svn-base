@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>个人中心-IT书</title>
+<#include "/public/common.html">
+</head>
+<body class="site-menubar-fold site-menubar-keep">
+		<#include "/public/left.html">
+		<div class="page profile profile_index">
+			<div class="page-content">
+				<div class="row">
+					<div class="col-lg-12 col-md-12">
+						<div class="nav-tabs-horizontal nav-tabs-inverse">
+							<ul class="nav nav-tabs nav-tabs-solid profile_nav" id="nav-tabs-solidlist">
+								<li class="active">
+									<a href="javascript:void(0);" class="padding-horizontal-30">
+										<i class="iconfont fz20 tp1 icon-home"></i>内容首页
+									</a>
+								</li>
+								<li>
+									<a href="/admin/content/addhtml" class="padding-horizontal-30">
+										<i class="iconfont icon-xingxing fz20 tp1"></i>内容添加
+									</a>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div class="row">
+									<div class="col-md-12">
+										<table class="table table-hover">
+									      <thead>
+									        <tr>
+									          <th>ID</th>
+									          <th>标题</th>
+									          <th>描述</th>
+									          <th>时间</th>
+									          <th>状态</th>
+									          <th>操作</th>
+									        </tr>
+									      </thead>
+									      <tbody id="tbody">
+										     <#list contents as content>
+										      	<tr data-count=${count}>
+												  <th scope="row">${content_index+1}</th>
+												  <td>${content.title}</td>
+												  <td>${content.tag}</td>
+												  <td>${(content.createTime)?date}</td>
+												  <td>
+													  <label><input data-field="status" data-opid="${content.id}" type="radio" name="status${content.id}" class="checked" value="0" <#if content.status==0>checked</#if>/>未发布</label>
+													  <label><input data-field="status" data-opid="${content.id}" type="radio" name="status${content.id}" class="checked" value="1" ${(content.status==1)?string('checked',"")}/>发布</label>
+												  </td>
+												  <td><a href="javascript:void(0);" data-byid="${content.id}" id="update">编辑</a></td>
+												</tr>
+											</#list>
+									      </tbody>
+									    </table>
+									    <strong class="container"><div class="pagination"></div></strong>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(function(){
+				//加载
+				contentList.init();
+			});
+			
+			var contentList={
+				init:function(){
+					//contentList.load();
+					//样式
+					contentList.sty();
+					//页面加载
+					contentList.loadpage();
+					//修改
+					contentList.update();
+					//删除
+					contentList.del();
+					
+				},
+				//页面加载
+				load:function(pno,psize){
+					var pageno=pno;
+					var pagesize=psize;
+					var params={"pageNo":pageno*pagesize,"pageSize":pagesize}
+					$.ajax({
+						type:"post",
+						url:basePath+"/admin/content/page",
+						data:params,
+						beforsSend:function(){
+							loading("页面加载中",2);
+						},
+						error:function(err){
+							console.log("error..."+err);
+						},
+						success:function(data){
+							$("#tbody").html(data);
+						}
+					}); 
+				},
+				//样式
+				sty:function(){
+					$("#nav-tabs-solidlist").find("li").on("click",function(){
+						$(this).addClass("active").siblings().removeClass("active");
+					});
+				},
+				//分页
+				loadpage:function(){
+					var count=$("#tbody").children().data("count");
+					$(".pagination").mkPage(count,{
+						items_per_page:5,
+						num_display_entries:5,
+						num_edge_entries:3,
+						prev_text:"前一页",
+						next_text:"后一页",
+						showGo : true,
+						showSelect:true,
+						callback:function(pno,psize){
+							contentList.load(pno,psize);
+						},
+					});
+				},
+				//编辑
+				update:function(){
+					$("#tbody").on("click","#update",function(){
+						var id=$(this).data("byid");
+						window.location.href=basePath+"/admin/content/idupdate/"+id;
+					});
+				},
+				//删除
+				del:function(){
+					$("#tbody").on("click",".checked",function(){
+						var id = $(this).data("opid");
+						var status=$(this).attr("name");
+						var value = $("input[type='radio'][name='"+status+"']:checked").val();
+						var content={"id":id,"status":value};
+						$.ajax({
+							type:"post",
+							url:basePath+"/admin/content/update",
+							data:content,
+							success:function(data){
+								if(data!="success"){
+									loading("失败！",2);
+								}else{
+									loading("修改成功!",2);
+								}
+							}
+						}); 
+					});
+				}
+			};
+		</script>
+	</body>
+</html>

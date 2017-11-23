@@ -1,0 +1,19 @@
+<#list comms as comm>
+	<tr>
+		<th scope="row">${comm_index+1}</th>
+		<td>${comm.username}</td>
+		<td>${comm.title}</td>
+		<td>${comm.content}</td>
+		<td>
+			<#if comm.status==1>
+				<label><input data-field="status" data-opid="${comm.id}" type="radio" name="status${comm.id}" class="checked" value="0"/>未发布</label>
+				<label><input data-field="status" data-opid="${comm.id}" type="radio" name="status${comm.id}" class="checked" value="1" checked/>发布</label>
+			<#else>
+				<label><input data-field="status" data-opid="${comm.id}" type="radio" name="status${comm.id}" class="checked" value="0" checked/>未发布</label>
+				<label><input data-field="status" data-opid="${comm.id}" type="radio" name="status${comm.id}" class="checked" value="1"/>发布</label>
+			</#if>
+		</td>
+		<td><button id="delete">删除</button></td>
+	</tr>
+</#list>
+ 

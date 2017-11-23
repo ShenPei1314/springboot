@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>统计报表-二维码</title>
+<#include "/public/common.html">
+<script type="text/javascript" src="${basePath}/js/charts/echarts.common.min.js"></script>
+</head>
+<body class="site-menubar-fold site-menubar-keep">
+	<#include "/public/left.html">
+	 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="chart" style="width: 600px;height:400px; margin: auto;"></div>
+    
+    <!-- 二维码 -->
+    <div style="position: fixed;right: 650px;top: 400px;">
+			<img src="http://localhost:8888/qrcode?q=https://www.baidu.com">
+			<img src="http://localhost:8888/qrcode2?q=https://www.baidu.com">
+	</div>
+    
+    <script type="text/javascript">
+	    $(function(){
+	    	PeiCharts.init();
+	    });
+    	var PeiCharts={
+   			init:function(){
+   				PeiCharts.load();
+   			},
+   			load:function(){
+   				$.ajax({
+					type:"post",
+					url:basePath+"/admin/exam/stas",
+					success:function(data){
+						chart("chart",data);
+					}
+				}); 
+   			}
+    	};
+    	function chart(id,data){
+    		var myChart = echarts.init(document.getElementById('chart'));
+    		var option = {
+    			    title : {
+    			        text: '分类统计表',
+    			        subtext: '内容分类',
+    			        x:'center'
+    			    },
+    			    tooltip : {
+    			        trigger: 'item',
+    			        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    			    },
+    			    legend: {
+    			        orient: 'vertical',
+    			        left: 'left',
+    			        data: data,
+    			    },
+    			    series : [
+    			        {
+    			            name: '访问来源',
+    			            type: 'pie',
+    			            radius : '55%',
+    			            center: ['50%', '60%'],
+    			            data:data,
+    			            itemStyle: {
+    			                emphasis: {
+    			                    shadowBlur: 10,
+    			                    shadowOffsetX: 0,
+    			                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+    			                }
+    			            }
+    			        }
+    			    ]
+    			};
+    		// 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+    	};
+    </script>
+</body>
+</html>

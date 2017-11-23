@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Storage</title>
+<#include "/public/common.html">
+</head>
+<body class="site-menubar-fold site-menubar-keep">
+	<#include "/public/left.html">
+	<div class="page profile profile_index">
+		<div class="page-content" />
+		<div class="row">
+			<div style="background: #c5bfbf; padding: 30px; color: #333;">
+				<h1>关于JSON格式工具类</h1>
+				<h3>JSON.stringify(object),讲一个js对象，转换成string</h3>
+				<p>对象转字符串的过程</p>
+				<h3>JSON.parse(string)</h3>
+				<p>json字符串转js对象过程</p>
+				<p style="color: red; font-weight: bold; font-size: 18px;">注:JSON必须全大写</p>
+				<p>
+					用户：<input type="text" id="username" />
+				</p>
+				<p>
+					密码：<input type="password" id="password" />
+				</p>
+				<p>
+					性别： <label><input type="radio" value="1" name="male" />男</label> 
+						<label><input type="radio" value="0" name="male" />女</label>
+				</p>
+				<p>
+					<label><input type="checkbox" id="box" value="1" />记住密码</label>
+				</p>
+				<p>
+					<input type="button" id="reg" value="注册" />
+				</p>
+			</div>
+		</div>
+	</div>
+		<pre style="background-color: #c5c1c1">
+			<code class="hljs">
+				function getSession(key,flag){
+					var storage = flag?window.sessionStorage:window.localStorage;
+					storage.getItem("pei_"+key);
+					return storage.getItem("pei_"+key);
+				};
+				function setSession(key,value,flag){
+					var storage = flag?window.sessionStorage:window.localStorage;
+					storage.setItem("pei_"+key,value);
+				};
+				function removeSession(key,flag){
+					var storage = flag?window.sessionStorage:window.localStorage;
+					storage.removeItem("pei_"+key);
+				};
+			
+				$(function(){
+					//加载
+					var name=getSession("name");
+					var pass=getSession("pass");
+					var sex=getSession("sex");
+					//判断
+					if(isNotEmpty(name)) $(".name").val(name);
+					if(isNotEmpty(pass)) $(".pass").val(pass);
+					if(isNotEmpty(sex))  $(".sex").val(hsex);
+					
+					//样式
+					$("#nav-tabs-solidlist").find("li").on("click",function(){
+						$(this).addClass("active").siblings().removeClass("active");
+					});
+					
+					//点击复选框
+					$(".box").on("click",function(){
+						//判断状态(选中/没选中)
+						if($("input[type='checkbox']").prop("checked")){
+							var name=$(".name").val();
+							var pass=$(".pass").val();
+							var sex=$(".sex").val();
+							setSession("name",name);
+							setSession("pass",pass);
+							setSession("sex",sex);
+						}else{
+							var name=$(".name").val("");
+							var pass=$(".pass").val("");
+							var sex=$(".sex").val("");
+							removeSession("name");
+							removeSession("pass");
+							removeSession("sex");
+						}
+					});
+				});
+			</code>
+		</pre>
+	<script type="text/javascript" src="${basePath}/js/exam/exam.js"></script>
+	<!-- 高亮css -->
+	<link rel="stylesheet" href="${basePath}/css/high/default.min.css">
+	<link rel="stylesheet" href="${basePath}/css/high/monokai-sublime.css">
+	<script src="${basePath}/css/high/highlight.min.js"></script>
+	<script >hljs.initHighlightingOnLoad();</script>  
+	<script>
+		$(function(){
+			//加载
+			var name=getSession("name");
+			var pass=getSession("pass");
+			var sex=getSession("sex");
+			//判断
+			if(isNotEmpty(name)) $("#username").val(name);
+			if(isNotEmpty(pass)) $("#password").val(pass);
+			if(isNotEmpty(sex))  $("input[name='male'][value='"+sex+"']").prop("checked",true);
+			
+			//样式
+			$("#nav-tabs-solidlist").find("li").on("click",function(){
+				$(this).addClass("active").siblings().removeClass("active");
+			});
+			
+			//点击复选框
+			$("#box").on("click",function(){
+				//判断状态(选中/没选中)
+				//$(this).is(":checkeed");
+				if($(this).prop("checked")){
+					var name=$("#username").val();
+					var pass=$("#password").val();
+					var sex=$("input[type='radio'][name='male']:checked").val();
+					setSession("name",name);
+					setSession("pass",pass);
+					setSession("sex",sex);
+				}else{
+					var name=$("#username").val("");
+					var pass=$("#password").val("");
+					removeSession("name");
+					removeSession("pass");
+					removeSession("sex");
+				}
+			});
+		});
+	</script>
+</body>
+</html>

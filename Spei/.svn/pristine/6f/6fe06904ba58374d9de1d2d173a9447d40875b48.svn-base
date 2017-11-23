@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cms.mapper.category.ICategoryMapper" >
+
+	<select id="findCategory" resultType="category" parameterType="params">
+		SELECT
+			id,
+			NAME,
+			create_time AS createTime,
+			`status`
+		FROM
+			mk_category
+		ORDER BY
+			create_time DESC
+		LIMIT #{pageNo},#{pageSize}
+	</select>
+	
+	<select id="selectCount" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			mk_category;
+	</select>
+	
+	<insert id="savaCategory" parameterType="category"
+		useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO 
+			mk_category(
+			name, 
+			status)
+		VALUE
+			(#{name},#{status})
+	</insert>
+	
+	<update id="updateCategory" parameterType="category">
+		UPDATE mk_category
+		SET
+			<if test="name!=null">name=#{name},</if>
+			<if test="status!=null">status=#{status},</if>
+			id = #{id}
+		WHERE
+			id = #{id}
+	</update>
+	
+</mapper>

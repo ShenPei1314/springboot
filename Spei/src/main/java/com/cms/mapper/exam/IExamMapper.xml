@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cms.mapper.exam.IExamMapper">
+
+	<insert id="addUser" parameterType="user" useGeneratedKeys="true"
+		keyProperty="id" keyColumn="id">
+		INSERT INTO mk_user (
+		username,
+		account,
+		password,
+		intro,
+		province_id,
+		male,
+		hobbys
+		)
+		VALUES
+		(#{username},#{account},#{password},#{intro},#{provinceId},#{male},#{hobbys})
+	</insert>
+	<select id="accountUser" resultType="int" parameterType="user">
+		select
+			count(1)
+		FROM
+			mk_user
+		where
+			account=#{account}
+	</select>
+
+</mapper>
+
+
+
+
+

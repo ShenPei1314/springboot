@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cms.mapper.comment.ICommentMapper">
+
+	<select id="findComments" resultType="hashmap" parameterType="params">
+		SELECT
+		mus.username,
+		mus.header_pic as headPic,
+		mcon.title,
+		mcom. status,
+		mcom.ip,
+		mcom.content
+		FROM
+		mk_comment mcom
+		LEFT JOIN mk_content mcon on mcom.content_id=mcon.id
+		LEFT JOIN cm_user mus on mcom.user_id=mus.id
+		LIMIT #{pageNo},#{pageSize}
+	</select>
+	
+	<select id="findCount" resultType="int">
+		select COUNT(*) from mk_comment
+	</select>
+</mapper>
+
+
+
+
+

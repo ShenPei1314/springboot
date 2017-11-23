@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>个人中心-IT书</title>
+<#include "/public/common.html">
+</head>
+<body class="site-menubar-fold site-menubar-keep" data-count="${count}">
+		<#include "/public/left.html">
+		<div class="page profile profile_index">
+			<div class="page-content">
+				<div class="row">
+					<div class="col-lg-12 col-md-12">
+						<div class="nav-tabs-horizontal nav-tabs-inverse">
+							<ul class="nav nav-tabs nav-tabs-solid profile_nav" id="nav-tabs-solidlist">
+								<li class="active">
+									<a href="javascript:void(0);" class="padding-horizontal-30">
+										<i class="iconfont fz20 tp1 icon-home"></i>内容首页
+									</a>
+								</li>
+								<li>
+									<a href="/admin/content/addhtml" class="padding-horizontal-30">
+										<i class="iconfont icon-xingxing fz20 tp1"></i>内容添加
+									</a>
+								</li>
+								<li>
+									<input type="text" id="category" style="background-color: #d4cdcd" placeholder="分类搜索"/>
+									<strong style="color: black;"><button type="button" class="butcate">搜索</button></strong>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div class="row">
+									<div class="col-md-12">
+										<table class="table table-hover">
+									      <thead>
+									        <tr>
+									          <th>序列</th>
+									          <th>标题</th>
+									          <th>分类</th>
+									          <th>描述</th>
+									          <th>时间</th>
+									          <th>状态</th>
+									          <th>操作</th>
+									        </tr>
+									      </thead>
+									      <tbody id="tbody">
+										    
+									      </tbody>
+									    </table>
+										<div class="container" style="margin-top: 0">
+											<div class="pagination"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="position: fixed;right: 30px;top: 450px;">
+			<h3>扫码登录</h3>
+			<img alt="登录" src="${basePath}/qrcode?q=https://www.baidu.com">
+		</div>
+		<script>
+			$(function(){
+				//加载
+				contentList.init();
+			});
+			
+			var contentList={
+				pageNo:0,
+				pageSize:5,
+				init:function(){
+					//页面加载
+					contentList.load();
+					//样式
+					contentList.sty();
+					//分页
+					//总条数
+					var count=$("body").data("count");
+					contentList.loadpage(count);
+					//修改
+					contentList.update();
+					//删除
+					contentList.del();
+					//分类搜索
+					contentList.category();
+				},
+				//页面加载
+				load:function(callback){
+					var category=$("#category").val();
+					var params={"pageNo":contentList.pageNo*contentList.pageSize,
+							"pageSize":contentList.pageSize,"category":category}
+					$.ajax({
+						type:"post",
+						url:basePath+"/admin/content/page",
+						data:params,
+						beforeSend:function(){
+							loading("页面加载中",2);
+						},
+						success:function(data){
+							$("#tbody").html(data);
+							var Count = $("#tbody").children().first().data("count");
+							if(callback)callback(Count);
+						}
+					}); 
+				},
+				//样式
+				sty:function(){
+					$("#nav-tabs-solidlist").find("li").on("click",function(){
+						$(this).addClass("active").siblings().removeClass("active");
+					});
+				},
+				//分页
+				loadpage:function(count){
+					$(".pagination").mkPage(count,{
+						items_per_page:5,
+						num_display_entries:5,
+						num_edge_entries:3,
+						prev_text:"前一页",
+						next_text:"后一页",
+						showGo : true,
+						showSelect:true,
+						callback:function(pno,psize){
+							contentList.pageNo=pno;
+							contentList.load();
+						},
+					});
+				},
+				//编辑
+				update:function(){
+					$("#tbody").on("click","#update",function(){
+						var id=$(this).data("byid");
+						window.location.href=basePath+"/admin/content/idupdate/"+id;
+					});
+				},
+				//删除
+				del:function(){
+					$("#tbody").on("click",".checked",function(){
+						var id = $(this).data("opid");
+						var status=$(this).attr("name");
+						var value = $("input[type='radio'][name='"+status+"']:checked").val();
+						var content={"id":id,"status":value};
+						$.ajax({
+							type:"post",
+							url:basePath+"/admin/content/update",
+							data:content,
+							success:function(data){
+								if(data!="success"){
+									loading("失败！",2);
+								}else{
+									loading("修改成功!",2);
+								}
+							}
+						}); 
+					});
+				},
+				//搜索
+				category:function(){
+					$(".butcate").on("click",function(){
+						contentList.pageNo=0;
+						$("#tbody").empty();
+						contentList.load(function (callback){
+							contentList.loadpage(callback);
+						});
+					});
+				}
+			};
+		</script>
+	</body>
+</html>

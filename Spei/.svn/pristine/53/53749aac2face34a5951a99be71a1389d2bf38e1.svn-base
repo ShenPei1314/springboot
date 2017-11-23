@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 后台用户管理的SQL语句 -->
+<mapper namespace="com.cms.mapper.supervise.IUserAdminMapper">
+	<!-- 查询所有用户 -->
+	<select id="getUsers" resultType="user" parameterType="params">
+		SELECT
+		id,
+		username,
+		account,
+		header_pic as headerPic,
+		create_time as createTime
+		FROM
+		mk_user
+		LIMIT #{pageNo},#{pageSize}
+	</select>
+
+
+	<!-- 查询用户总数 -->
+	<select id="countSelect" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+		mk_user
+	</select>
+
+	<!-- 修改用户状态 -->
+	<update id="updateActive" parameterType="user">
+		UPDATE mk_user
+		SET active =#{active}
+		WHERE
+		id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,17 @@
+<#list users as user>
+<tr>
+	<th scope="row">${user.id}</th>
+	<td>${user.username}</td>
+	<td>${user.account}</td>
+	<td width="375px">${(user.createTime)?date}</td>
+	<td>
+	   <#if user.status==1> 
+	       <input data-field="status"data-userid="${user.id}" type="radio" name="status${user.id}"class="checked" value="0" />未激活
+	       <input data-field="status"data-userid="${user.id}" type="radio" name="status${user.id}"class="checked" value="1" checked />激活
+	   <#else> 
+	        <input data-field="status" data-userid="${user.id}" type="radio"name="status${user.id}" class="checked" value="0" checked />未激活
+		    <input data-field="status" data-userid="${user.id}" type="radio"name="status${user.id}" class="checked" value="1" />激活
+	   </#if>
+	   </td>
+</tr>
+</#list>

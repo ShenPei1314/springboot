@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>个人中心-IT书</title>
+<#include "/public/common.html">
+</head>
+<body class="site-menubar-fold site-menubar-keep">
+		<#include "/public/left.html">
+		<div class="page profile profile_info profile_index">
+			<div class="page-content">
+				<div class="row">
+					<div class="col-lg-7 col-md-7">
+						<div class="nav-tabs-horizontal nav-tabs-inverse">
+							<ul class="nav nav-tabs nav-tabs-solid profile_nav" id="nav-tabs-solidlist">
+								<li class="active">
+									<a href="javascript:void(0);" class="padding-horizontal-30">
+										<i class="iconfont icon-xingxing  tp1"></i>内容添加
+									</a>
+								</li>
+								<li>
+									<a href="/admin/content/list" class="padding-horizontal-30">
+										<i class="iconfont icon-home tp1"></i>返回首页
+									</a>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div class="row">
+									<div class="col-md-7">
+										<div class="form-horizontal">
+											<div class="form-group margin-top-20">
+												<label class="col-sm-3 control-label">
+												<a class="avatar avatar-100 margin-xs-0 vertical-align headuploadimg" href="javascript:void(0)">
+													<img id="img" src="https://img.metinfo.cn/?username=1571828260@qq.com" alt="1571828260@qq.com">
+												</a>
+												</label>
+												<div class="col-sm-9">
+													<a href="javascript:void(0)" class="headuploadbtn">
+														<i class="iconfont icon-upload1" aria-hidden="true"></i>
+														添加图片
+														<input id="fileupload" type="file" name="files[]" multiple>
+													</a>
+													<p class="blue-grey-400 margin-bottom-0">支持上传 jpg、png、gif 格式图片，大小不超过「2Mb」。</p>
+												</div>
+											</div>
+											<hr>
+											<div class="example-wrap margin-bottom-0">
+											
+											<i class="container">
+												<label><input type="radio" name="status" class="checked" value="0"/><strong style="color: red">未发布</strong></label>
+												<label><input type="radio" name="status" class="checked" value="1" checked/><strong style="color: red">发布</strong></label>
+											</i>
+											<form method="POST" class="form-horizontal fv-form fv-form-bootstrap" id="companyinfoedit" action="https://account.metinfo.cn/profile/info/do_m_info/" novalidate="novalidate"><button type="submit" class="fv-hidden-submit" style="display: none; width: 0px; height: 0px;"></button>
+												<div class="form-group margin-top-20">
+													<label class="col-sm-3 control-label">标题:</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" value="" placeholder="标题" id="title">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-sm-3 control-label">描述:</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" value="" placeholder="描述" id="tag">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-sm-3 control-label">喜欢数:</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" value="" placeholder="喜欢数" id="loves">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-sm-3 control-label">点击数:</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" value="" placeholder="点击数" id="hits">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-sm-3 control-label">内容:</label>
+													<div class="col-sm-9">
+														<textarea class="form-control" placeholder="内容" rows="3" id="content"></textarea>
+													</div>
+												</div>
+												<div class="form-group margin-bottom-0">
+													<label class="col-sm-3 control-label"></label>
+													<div class="col-sm-9">
+														<button type="button" class="btn btn-primary">保存</button>
+													</div>
+												</div>
+											</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			$(function(){
+				//样式
+				$("#nav-tabs-solidlist").find("li").on("mousemove",function(){
+					$(this).addClass("active").siblings().removeClass("active");
+				});
+				
+				//加载
+				content.init();
+			});
+			var content={
+				init:function(){
+					content.add();
+				},
+				//修改
+				add:function(){
+					$(".btn-primary").on("click",function(){
+						var title=$("#title").val();
+						var tag=$("#tag").val();
+						var hits=$("#hits").val();
+						var loves=$("#loves").val();
+						var content=$("#content").html();
+						var img=$("#img").attr("src");
+						alert(img);
+						return;
+						var status = $("input[type='radio'][name='status']:checked").val();
+						var content={"title":title,"tag":tag,"loves":loves,
+									"hits":hits,"content":content,"img":img,"status":status};
+						$.ajax({
+							type:"post",
+							url:basePath+"/admin/content/add",
+							data:content,
+							success:function(data){
+								if(data!="success"){
+									loading("添加成功！",2);
+								}else{
+									loading("添加成功!",2);
+								}
+							}
+						});
+					});
+				},
+				//文件上传
+				upload:function(){
+					var url = "${basePath}/upload/file";
+				    $('#fileupload').fileupload({
+				        url: url,
+				        dataType: 'json',
+				        paramName:"doc",
+				        done: function (e, data) {
+				        	console.log(data);
+				        	var json = data.result;
+				        	$("#img").attr("src",json.path);
+				        },
+				        progressall: function (e, data) {
+				            var progress = parseInt(data.loaded / data.total * 100, 10);
+				            $('#progress .progress-bar').css(
+				                'width',
+				                progress + '%'
+				            );
+				        }
+				    });
+				}
+			};
+		</script>
+	</body>
+</html>

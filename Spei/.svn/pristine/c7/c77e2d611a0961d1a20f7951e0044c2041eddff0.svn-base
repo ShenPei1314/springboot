@@ -1,0 +1,145 @@
+package com.cms.web.category;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.cms.bean.Category;
+import com.cms.bean.Params;
+import com.cms.bean.User;
+import com.cms.bean.UserSession;
+import com.cms.mapper.category.ICategoryMapper;
+import com.cms.mapper.login.IUserMapper;
+import com.cms.util.MD5PwdUtil;
+
+
+/**
+ * 
+ * CategoryCotroller<br/>
+ * 创建人:李雄杰<br/>
+ * 时间：2017年11月3日-上午10:17:23 <br/>
+ * @version 1.0.0<br/>
+ *
+ */
+@Controller
+@RequestMapping("/admin")
+public class CategoryCotroller {
+	
+	@Autowired
+	private ICategoryMapper	categoryMapper;
+	
+	/**
+	 * 进入添加分类页面
+	 * 方法名：list<br/>
+	 * 创建人：李雄杰  <br/>
+	 * 时间：2017年11月9日-下午11:01:53 <br/>
+	 * 手机:1564545646464<br/>
+	 * @return String<br/>
+	 * @exception <br/>
+	 * @since  1.0.0<br/>
+	 */
+	@RequestMapping("/add")
+	public String list() {
+		return "/category/add";
+	}
+	
+	/**
+	 * 分类主页
+	 * 方法名：category<br/>
+	 * 创建人：李雄杰  <br/>
+	 * 时间：2017年11月9日-下午11:02:47 <br/>
+	 * 手机:1564545646464<br/>
+	 * @param model
+	 * @param params
+	 * @return String<br/>
+	 * @exception <br/>
+	 * @since  1.0.0<br/>
+	 */
+	@RequestMapping("category")
+	public String category(Model model,Params params) {
+		//查询数据
+		List<Category> category=categoryMapper.findCategory(params);
+		//查询出总条数
+		int count=categoryMapper.selectCount();
+		//放入作用域中
+		model.addAttribute("category", category);
+		model.addAttribute("count", count);
+		return "/category/category";
+	}
+	
+	/**
+	 * 查询出数据
+	 * 方法名：seav<br/>
+	 * 创建人：李雄杰  <br/>
+	 * 时间：2017年11月9日-下午11:03:15 <br/>
+	 * 手机:1564545646464<br/>
+	 * @param model
+	 * @param params
+	 * @return String<br/>
+	 * @exception <br/>
+	 * @since  1.0.0<br/>
+	 */
+	@RequestMapping("/aseav")
+	public String seav(Model model,Params params){
+		//查询数据
+		List<Category> category=categoryMapper.findCategory(params);
+		//放入作用域中
+		model.addAttribute("category", category);
+		return "/category/templates";
+	}
+	
+	/**
+	 * 添加分类
+	 * 方法名：save<br/>
+	 * 创建人：李雄杰  <br/>
+	 * 时间：2017年11月9日-下午11:03:34 <br/>
+	 * 手机:1564545646464<br/>
+	 * @param category
+	 * @return String<br/>
+	 * @exception <br/>
+	 * @since  1.0.0<br/>
+	 */
+	@RequestMapping("/category/sava")
+	@ResponseBody
+	public String save(Category category){
+		categoryMapper.savaCategory(category);
+		if(category.getId()!=null){
+			return "success";
+		}else{
+			return "fail";
+		}
+	}
+	
+	/**
+	 * 修改分类的数据
+	 * 方法名：update<br/>
+	 * 创建人：李雄杰  <br/>
+	 * 时间：2017年11月9日-下午11:03:48 <br/>
+	 * 手机:1564545646464<br/>
+	 * @param category
+	 * @return String<br/>
+	 * @exception <br/>
+	 * @since  1.0.0<br/>
+	 */
+	@RequestMapping("/category/update")
+	@ResponseBody
+	public String update(Category category){
+		int count=categoryMapper.updateCategory(category);
+		if(count==1){
+			return "success";
+		}else{
+			return "fail";
+		}
+	}
+	
+	
+}

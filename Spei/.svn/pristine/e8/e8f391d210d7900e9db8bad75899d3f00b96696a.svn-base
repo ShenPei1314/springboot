@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cms.mapper.content.IContentMapper" >
+
+	<select id="findContent" resultType="content" parameterType="params">
+		select
+			id,
+			title,
+			status,
+			create_time as createTime,
+			tag
+		FROM
+			mk_content
+		order by create_time desc
+		LIMIT
+			#{pageNo},#{pageSize}
+	</select>
+	<select id="countContent" resultType="int">
+		select
+			count(1)
+		FROM
+			mk_content
+	</select>
+	
+	<select id="ByIdContent" resultType="content">
+		select
+			id,
+			title,
+			content,
+			status,
+			loves,
+			hits,
+			img,
+			create_time as createTime,
+			tag
+		FROM
+			mk_content
+		where
+			id=#{id}
+	</select>
+	<insert id="addContent" parameterType="content"
+		useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into
+			mk_content(
+			title,
+			content,
+			img,
+			status,
+			loves,
+			hits,
+			user_id,
+			tag)
+		values
+			(#{title},#{content},#{img},#{status},#{loves},#{hits},#{userId},#{tag})
+	</insert>
+	<update id="updateContent" parameterType="content">
+		UPDATE mk_content
+		SET
+			<if test="title!=null">title=#{title},</if>
+			<if test="img!=null">img=#{img},</if>
+			<if test="content!=null">content=#{content},</if>
+			<if test="status!=null">status=#{status},</if>
+			<if test="tag!=null">tag=#{tag},</if>
+			<if test="categoryId!=null">category_id=#{categoryId},</if>
+			<if test="hits!=null">hits=#{hits},</if>
+			<if test="loves!=null">loves=#{loves},</if>
+			update_time=NOW()
+		WHERE
+			id = #{id}
+	</update>
+	
+</mapper>

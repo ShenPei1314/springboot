@@ -1,0 +1,8 @@
+<#list comms as comm>
+<tr>
+	<th scope="row">${comm_index+1}</th>
+	<td>${comm.username}</td>
+	<td>${comm.title}</td>
+	<td>${comm.content}</td>
+</tr>
+</#list>

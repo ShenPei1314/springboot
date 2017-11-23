@@ -1,0 +1,9 @@
+<#list contents as content>
+	<tr data-count=${count}>
+	  <th scope="row">${content.id}</th>
+	  <td>${content.title}</td>
+	  <td>${content.tag}</td>
+	  <td>${(content.createTime)?date}</td>
+	  <td><a href="javascript:void(0);">编辑</a>❤<a href="javascript:void(0);">删除</a></td>
+	</tr>
+</#list>

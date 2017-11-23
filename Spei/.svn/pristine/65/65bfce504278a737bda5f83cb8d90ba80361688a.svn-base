@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>个人中心-IT书</title>
+<#include "/public/common.html">
+</head>
+<body class="site-menubar-fold site-menubar-keep">
+		<#include "/public/left.html">
+		<div class="page profile profile_info profile_index">
+			<div class="page-content">
+				<div class="row">
+					<div class="col-lg-7 col-md-7">
+						<div class="nav-tabs-horizontal nav-tabs-inverse">
+							<ul class="nav nav-tabs nav-tabs-solid profile_nav" id="nav-tabs-solidlist">
+								<li class="active">
+									<a href="javascript:void(0);" class="padding-horizontal-30">
+										<i class="iconfont icon-vip fz20 tp1"></i>添加分类
+									</a>
+								</li>
+								<li>
+									<a href="/admin/category" class="padding-horizontal-30">
+										<i class="iconfont icon-home tp1"></i>返回
+									</a>
+								</li>
+							</ul>
+
+							<div class="tab-content" style="width: 620px;height: 340px">
+								<div class="row">
+									<div class="col-md-7">
+										<div class="form-horizontal">
+											<div class="example-wrap margin-bottom-0">
+												<div class="form-group margin-top-20">
+													<label class="col-sm-3 control-label">分类名称</label>
+													<div class="col-sm-9">
+														<input type="text" class="form-control" id="name">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-sm-3 control-label">分类状态</label>
+													<div class="col-sm-9">
+														<label class="col-sm-3 control-label"><input type="radio" class="checked" name="status" value="1" checked/>发布</label>
+														<label class="col-sm-3 control-label"><input type="radio" class="checked" name="status" value="0"/>未发布</label>
+													</div>
+												</div>
+												<div class="form-group margin-bottom-0">
+													<label class="col-sm-3 control-label"></label>
+													<div class="col-sm-9">
+														<button id="addcategory" class="btn btn-primary">添加</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			/* $(function(){
+				
+				$("#addcategory").on("click",function(){
+					var name=$("#name").val();
+					var status=$("input[name='status']:checked").val();
+					
+					
+				});
+			}); */
+			$(function(){
+				//加载
+				category.init();
+			});
+			
+			var category={
+				init:function(){
+					category.add();
+				},
+				add:function(){
+					$("#addcategory").on("click",function(){
+						var name=$("#name").val();
+						var status=$("input[name='status']:checked").val();
+						var category={
+						"name":name,
+						"status":status};
+						$.ajax({
+							type:"post",
+							url:"${basePath}/admin/category/sava",
+							data:category,
+							success:function(data){
+								alert(data);
+								if(data!="success"){
+									loading("添加成功！",2);
+								}else{
+									loading("添加失败!",2);
+								}
+							}
+						});
+					});
+				}
+			};
+		</script>
+	</body>
+</html>

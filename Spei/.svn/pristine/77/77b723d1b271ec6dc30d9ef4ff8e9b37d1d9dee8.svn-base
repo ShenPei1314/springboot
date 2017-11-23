@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>个人中心-IT书</title>
+<#include "/public/common.html">
+</head>
+<body class="site-menubar-fold site-menubar-keep">
+	<#include "/public/left.html">
+	<div class="page profile profile_info profile_index">
+		<div class="page-content">
+			<div class="row">
+				<div class="col-lg-7 col-md-7">
+					<div class="nav-tabs-horizontal nav-tabs-inverse">
+						<ul class="nav nav-tabs nav-tabs-solid profile_nav" id="nav-tabs-solidlist">
+							<li class="active">
+								<a href="javascript:void(0);" class="padding-horizontal-30">
+									<i class="iconfont icon-setting  tp1"></i>内容修改
+								</a>
+							</li>
+							<li>
+								<a href="/admin/content/list" class="padding-horizontal-30">
+									<i class="iconfont icon-home  tp1"></i>返回首页
+								</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="row">
+								<div class="col-md-7">
+									<div class="form-horizontal">
+										<div class="form-group margin-top-20">
+											<label class="col-sm-3 control-label">
+											<a class="avatar avatar-100 margin-xs-0 vertical-align headuploadimg upload" href="javascript:void(0)">
+												<img id="img" src="${Idcontent.img}" alt="1571828260@qq.com">
+											</a>
+											</label>
+											<div class="col-sm-9">
+												<a href="javascript:void(0)" class="headuploadbtn">
+													<i class="iconfont icon-upload1" aria-hidden="true"></i>
+													修改图片
+													<input id="fileupload" type="file" name="files[]" multiple>
+												</a>
+												<p class="blue-grey-400 margin-bottom-0">支持上传 jpg、png、gif 格式图片，大小不超过「2Mb」。</p>
+											</div>
+										</div>
+										<hr>
+										<div class="example-wrap margin-bottom-0">
+											<label><input type="radio" name="status" class="checked" value="0" <#if content.status==0>checked</#if>/><strong style="color: red">未发布</strong></label>
+											<label><input type="radio" name="status" class="checked" value="1" ${(content.status==1)?string('checked',"")}/><strong style="color: red">发布</strong></label>
+										<form method="POST" class="form-horizontal fv-form fv-form-bootstrap" id="companyinfoedit" action="https://account.metinfo.cn/profile/info/do_m_info/" novalidate="novalidate"><button type="submit" class="fv-hidden-submit" style="display: none; width: 0px; height: 0px;"></button>
+											<div class="form-group margin-top-20">
+												<label class="col-sm-3 control-label">标题:</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" data-pid="${Idcontent.id}" value="${Idcontent.title}" placeholder="标题" id="title">
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-3 control-label">描述:</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" value="${Idcontent.tag}" placeholder="描述" id="tag">
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-3 control-label">喜欢数:</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" value="${Idcontent.loves}" placeholder="喜欢数" id="loves">
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-3 control-label">点击数:</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" value="${Idcontent.hits}" placeholder="点击数" id="hits">
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-3 control-label">内容:</label>
+												<div class="col-sm-9">
+													<textarea class="form-control" placeholder="内容" rows="3" id="content">${Idcontent.content}</textarea>
+												</div>
+											</div>
+											<div class="form-group margin-bottom-0">
+												<label class="col-sm-3 control-label"></label>
+												<div class="col-sm-9">
+													<button type="button" class="btn btn-primary">修改</button>
+												</div>
+											</div>
+										</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		<script>
+			$(function(){
+				//样式
+				$("#nav-tabs-solidlist").find("li").on("mousemove",function(){
+					$(this).addClass("active").siblings().removeClass("active");
+				});
+				
+				//加载
+				content.init();
+			});
+			var content={
+				init:function(){
+					content.update();
+					content.upload();
+				},
+				//修改
+				update:function(){
+					$(".btn-primary").on("click",function(){
+						var id=$("#title").data("pid");
+						var title=$("#title").val();
+						var tag=$("#tag").val();
+						var hits=$("#hits").val();
+						var loves=$("#loves").val();
+						var content=$("#content").html();
+						var img=$("#img").attr("src");
+						var status = $("input[type='radio'][name='status']:checked").val();
+						var content={"id":id,"title":title,"tag":tag,"loves":loves,
+									"hits":hits,"content":content,"img":img,"status":status};
+						$.ajax({
+							type:"post",
+							url:basePath+"/admin/content/update",
+							data:content,
+							success:function(data){
+								if(data!="success"){
+									loading("修改失败！",2);
+								}else{
+									loading("修改成功!",2);
+								}
+							}
+						});
+					});
+				},
+				//文件上传
+				upload:function(){
+					var url = "${basePath}/upload/file";
+				    $('#fileupload').fileupload({
+				        url: url,
+				        dataType: 'json',
+				        paramName:"doc",
+				        done: function (e, data) {
+				        	console.log(data);
+				        	var json = data.result;
+				        	$("#img").attr("src",json.path);
+				        },
+				        progressall: function (e, data) {
+				            var progress = parseInt(data.loaded / data.total * 100, 10);
+				            $('#progress .progress-bar').css(
+				                'width',
+				                progress + '%'
+				            );
+				        }
+				    });
+				}
+			};
+		</script>
+	</body>
+</html>
